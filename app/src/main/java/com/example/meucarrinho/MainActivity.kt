@@ -21,12 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MeuCarrinhoTheme {
-                val item = ShoppingItem(
-                    name = "Bananas",
-                    category = Category.HORTALICAS,
-                    quantity = 6
-                )
-                println("Item criado: ${item.name} | Categoria: ${item.category.label}")
+
             }
         }
     }
