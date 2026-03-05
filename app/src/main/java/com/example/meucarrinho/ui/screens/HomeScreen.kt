@@ -1,5 +1,6 @@
 package com.example.meucarrinho.ui.screens
 
+import android.R.attr.category
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -44,6 +47,7 @@ import com.example.meucarrinho.ui.theme.GreenPrimary
 import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 import com.example.meucarrinho.ui.theme.ProgressBackground
 import com.example.meucarrinho.ui.theme.ProgressOrange
+import kotlin.text.category
 
 val sampleItems = listOf(
     ShoppingItem(name = "Bananas", category = Category.HORTALICAS, quantity = 6, isChecked = true),
@@ -91,6 +95,18 @@ fun HomeScreen(items: List<ShoppingItem> = sampleItems,) {
             item {
                 ProgressCard(items = items)
             }
+
+            val grouped = items.groupBy { it.category }
+
+            items(
+                items = grouped.entries.toList(),
+                key   = { it.key.name },
+            ) { (category, categoryItems) ->
+                CategoryCard(
+                    category = category,
+                    items    = categoryItems,
+                )
+            }
         }
     }
 }
@@ -124,7 +140,7 @@ fun ProgressCard(items: List<ShoppingItem>) {
         elevation = CardDefaults.cardElevation(0.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            
+
             Text(
                 text       = "Progresso do Carrinho",
                 fontSize   = 12.sp,
@@ -170,6 +186,44 @@ fun ProgressCard(items: List<ShoppingItem>) {
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(99.dp))
                         .background(GreenPrimary)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CategoryCard(
+    category: Category,
+    items: List<ShoppingItem>,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = category.secondary),
+        elevation = CardDefaults.cardElevation(0.dp),
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = category.primary,
+                    modifier = Modifier.size(36.dp),
+                ) {
+                    Icon(
+                        imageVector = category.icon,
+                        contentDescription = category.label,
+                        tint = Color.White,
+                        modifier = Modifier.padding(8.dp),
+                    )
+                }
+                Text(
+                    text = category.label,
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }
