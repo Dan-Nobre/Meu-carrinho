@@ -61,7 +61,7 @@ val sampleItems = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(items: List<ShoppingItem> = sampleItems,) {
+fun HomeScreen(items: List<ShoppingItem> = sampleItems, onAddClick: () -> Unit = {} ){
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,7 +75,7 @@ fun HomeScreen(items: List<ShoppingItem> = sampleItems,) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { },
+                onClick = { onAddClick() },
                 shape = CircleShape,
                 containerColor = GreenPrimary,
                 contentColor = Color.White,
