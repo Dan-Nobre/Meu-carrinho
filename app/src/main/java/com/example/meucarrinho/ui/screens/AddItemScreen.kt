@@ -55,7 +55,7 @@ import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemScreen() {
+fun AddItemScreen(onBack: () -> Unit = {}) {
 
     var itemName by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.HORTALICAS) }
@@ -68,7 +68,7 @@ fun AddItemScreen() {
                     Text("Novo Item", fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             imageVector        = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar",
