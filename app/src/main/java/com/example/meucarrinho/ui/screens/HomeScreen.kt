@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -226,6 +229,55 @@ fun CategoryCard(
                     fontWeight = FontWeight.Bold,
                 )
             }
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            items.forEach { item ->
+                ItemRow(
+                    item          = item,
+                    categoryColor = category.primary,
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ItemRow(
+    item: ShoppingItem,
+    categoryColor: Color,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(0.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = item.isChecked,
+                onCheckedChange = null, // sem interação por enquanto
+                colors = CheckboxDefaults.colors(
+                    checkedColor = categoryColor,
+                    uncheckedColor = categoryColor,
+                ),
+            )
+            Text(
+                text = "${item.quantity}x ${item.name}",
+                color = if (item.isChecked) Color.Gray else Color.Black,
+                textDecoration = if (item.isChecked)
+                    TextDecoration.LineThrough
+                else
+                    TextDecoration.None,
+            )
         }
     }
 }
