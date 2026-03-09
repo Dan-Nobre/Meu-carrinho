@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,10 +20,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -51,7 +58,8 @@ import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 fun AddItemScreen() {
 
     var itemName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf(Category.HORTALICAS)}
+    var selectedCategory by remember { mutableStateOf(Category.HORTALICAS) }
+    var quantity by remember { mutableStateOf(1) }
 
     Scaffold(
         topBar = {
@@ -131,6 +139,19 @@ fun AddItemScreen() {
                     }
                 }
             }
+
+            Column {
+                Text(
+                    text       = "Qual a quantidade?",
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.height(8.dp))
+                QuantitySelector(
+                    quantity         = quantity,
+                    onQuantityChange = { quantity = it },
+                )
+            }
+
         }
     }
 }
@@ -180,5 +201,66 @@ fun CategoryOption(
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color      = if (isSelected) category.primary else Color.Gray,
         )
+    }
+}
+
+@Composable
+fun QuantitySelector(
+    quantity        : Int,
+    onQuantityChange: (Int) -> Unit,
+) {
+    Card(
+        modifier  = Modifier.fillMaxWidth(),
+        shape     = RoundedCornerShape(16.dp),
+        colors    = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0)),
+        elevation = CardDefaults.cardElevation(0.dp),
+    ) {
+        Row(
+            modifier              = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment     = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            FilledIconButton(
+                onClick  = { if (quantity > 1) onQuantityChange(quantity - 1) },
+                enabled  = quantity > 1,
+                shape    = CircleShape,
+                colors   = IconButtonDefaults.filledIconButtonColors(
+                    containerColor         = Color.White,
+                    contentColor           = Color(0xFF1A1A1A),
+                    disabledContainerColor = Color(0xFFE0E0E0),
+                    disabledContentColor   = Color.LightGray,
+                ),
+                modifier = Modifier.size(44.dp),
+            ) {
+                Icon(Icons.Default.Remove, contentDescription = "Diminuir")
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text       = "$quantity",
+                    fontSize   = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text     = "UND.",
+                    fontSize = 12.sp,
+                    color    = Color.Gray,
+                )
+            }
+
+            FilledIconButton(
+                onClick  = { onQuantityChange(quantity + 1) },
+                shape    = CircleShape,
+                colors   = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = Color.White,
+                    contentColor   = Color(0xFF1A1A1A),
+                ),
+                modifier = Modifier.size(44.dp),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Aumentar")
+            }
+        }
     }
 }
