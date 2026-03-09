@@ -2,13 +2,19 @@ package com.example.meucarrinho.ui.screens
 
 import android.annotation.SuppressLint
 import android.widget.Space
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,11 +34,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.meucarrinho.data.Category
 import com.example.meucarrinho.ui.theme.GreenPrimary
 import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 
@@ -42,6 +51,7 @@ import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 fun AddItemScreen() {
 
     var itemName by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf(Category.HORTALICAS)}
 
     Scaffold(
         topBar = {
@@ -86,7 +96,6 @@ fun AddItemScreen() {
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
 
-            // Campo de nome
             Column {
                 Text(
                     text       = "Nome do Item",
@@ -102,6 +111,26 @@ fun AddItemScreen() {
                     shape           = RoundedCornerShape(12.dp),
                 )
             }
+
+            Column {
+                Text(
+                    text       = "Selecione a Categoria",
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.height(12.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding        = PaddingValues(horizontal = 4.dp),
+                ) {
+                    items(Category.entries) { category ->
+                        CategoryOption(
+                            category   = category,
+                            isSelected = category == selectedCategory,
+                            onClick    = { selectedCategory = category },
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -111,5 +140,45 @@ fun AddItemScreen() {
 fun AddItemScreenPreview() {
     MeuCarrinhoTheme {
         AddItemScreen()
+    }
+}
+
+@Composable
+fun CategoryOption(
+    category  : Category,
+    isSelected: Boolean,
+    onClick   : () -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier            = Modifier
+            .clickable { onClick() }
+            .padding(vertical = 4.dp),
+    ) {
+        Surface(
+            shape  = CircleShape,
+            color  = if (isSelected) category.primary else category.secondary,
+            border = if (isSelected)
+                BorderStroke(2.dp, category.primary)
+            else
+                null,
+            modifier = Modifier.size(52.dp),
+        ) {
+            Icon(
+                imageVector        = category.icon,
+                contentDescription = category.label,
+                tint               = if (isSelected) Color.White else category.primary,
+                modifier           = Modifier.padding(12.dp),
+            )
+        }
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text       = category.label.split(" ").first(),
+            fontSize   = 10.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color      = if (isSelected) category.primary else Color.Gray,
+        )
     }
 }
