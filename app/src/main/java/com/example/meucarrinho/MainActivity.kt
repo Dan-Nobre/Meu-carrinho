@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.meucarrinho.data.Category
 import com.example.meucarrinho.data.ShoppingItem
+import com.example.meucarrinho.ui.screens.HomeScreen
 import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MeuCarrinhoTheme {
-
+                HomeScreen()
             }
         }
     }
