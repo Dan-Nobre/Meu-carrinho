@@ -2,6 +2,7 @@ package com.example.meucarrinho.ui.screens
 
 import android.R.attr.category
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,7 +62,11 @@ val sampleItems = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(items: List<ShoppingItem> = sampleItems, onAddClick: () -> Unit = {} ){
+fun HomeScreen(
+        items: List<ShoppingItem> = sampleItems,
+        onAddClick: () -> Unit = {},
+        onToggleItem: (Long) -> Unit = {},
+    ) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -108,6 +113,7 @@ fun HomeScreen(items: List<ShoppingItem> = sampleItems, onAddClick: () -> Unit =
                 CategoryCard(
                     category = category,
                     items    = categoryItems,
+                    onToggleItem = { id -> onToggleItem(id) },
                 )
             }
         }
@@ -199,6 +205,7 @@ fun ProgressCard(items: List<ShoppingItem>) {
 fun CategoryCard(
     category: Category,
     items: List<ShoppingItem>,
+    onToggleItem: (Long) -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -229,16 +236,17 @@ fun CategoryCard(
                     fontWeight = FontWeight.Bold,
                 )
             }
-        }
 
-        Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            items.forEach { item ->
-                ItemRow(
-                    item          = item,
-                    categoryColor = category.primary,
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                items.forEach { item ->
+                    ItemRow(
+                        item = item,
+                        categoryColor = category.primary,
+                        onToggle = { onToggleItem(item.id) },
+                    )
+                }
             }
         }
     }
@@ -249,6 +257,7 @@ fun CategoryCard(
 fun ItemRow(
     item: ShoppingItem,
     categoryColor: Color,
+    onToggle: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -259,12 +268,13 @@ fun ItemRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { onToggle() }
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
                 checked = item.isChecked,
-                onCheckedChange = null, // sem interação por enquanto
+                onCheckedChange = { onToggle() },
                 colors = CheckboxDefaults.colors(
                     checkedColor = categoryColor,
                     uncheckedColor = categoryColor,
