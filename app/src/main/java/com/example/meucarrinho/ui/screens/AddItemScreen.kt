@@ -55,7 +55,10 @@ import com.example.meucarrinho.ui.theme.MeuCarrinhoTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemScreen(onBack: () -> Unit = {}) {
+fun AddItemScreen(
+        onBack: () -> Unit = {},
+        onConfirm: (String, Category, Int) -> Unit = { _,  _, _ ->}
+    ) {
 
     var itemName by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.HORTALICAS) }
@@ -76,7 +79,11 @@ fun AddItemScreen(onBack: () -> Unit = {}) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(
+                        onClick = {
+                            onConfirm(itemName, selectedCategory, quantity)
+                        }
+                    ) {
                         Surface(
                             shape = CircleShape,
                             color = GreenPrimary,
